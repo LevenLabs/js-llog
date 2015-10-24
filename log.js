@@ -33,12 +33,14 @@ function LLog(level, stdout) {
     this.level = handleLevel(level) || LEVEL_DEBUG;
     if (stdout) {
         this.stdout = stdout;
-    } else if (typeof process !== 'undefined' && process.stdout) {
+    } else if (typeof process !== 'undefined' && process.stdout && typeof LLOG_SKIP_USING_PROCESS === 'undefined') {
+        //LLOG_SKIP_USING_PROCESS is defined in tests
         this.stdout = process.stdout;
     } else {
         this.stdout = {
             write: function(string) {
-                console.log(string);
+                //trim ending \n or spaces before logging
+                console.log(string.replace(/\s+$/, ''));
             }
         };
     }
