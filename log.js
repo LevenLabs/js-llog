@@ -155,6 +155,10 @@ LLog.prototype.log = function(lvl, message, kv) {
     //shorthand for the common case of log.error('message', err)
     if (kv instanceof Error) {
         kv = {error: kv};
+    } else if (typeof kv === 'string' || kv instanceof String) {
+        kv = {string: kv};
+    } else if (typeof kv === 'number' || kv instanceof Number) {
+        kv = {number: kv};
     }
     for (k in kv) {
         if (kv.hasOwnProperty(k)) {

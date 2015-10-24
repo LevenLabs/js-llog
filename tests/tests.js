@@ -151,6 +151,15 @@ exports.toJSONKeyVal = function(test) {
     test.done();
 };
 
+exports.miscKeyVal = function(test) {
+    log.setLevel('debug');
+    log.debug('', 'test');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- string="test"');
+    log.debug('', 1);
+    test.equal(lastWrite, '~ [date] DEBUG --  -- number="1"');
+    test.done();
+};
+
 exports.unicodeEscape = function(test) {
     log.setLevel('debug');
     log.debug('\u2665', {k: '\u2665'});
