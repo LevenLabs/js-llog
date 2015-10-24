@@ -170,7 +170,7 @@ LLog.prototype.log = function(lvl, message, kv) {
     if (parts[parts.length - 1] === '--') {
         parts.pop();
     }
-    this.stdout.write(parts.join(' '));
+    this.stdout.write(parts.join(' ') + '\n');
 };
 
 LLog.instance = null;

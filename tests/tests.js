@@ -16,7 +16,7 @@ exports.setupStdout = function(test) {
 exports.debug = function(test) {
     log.setLevel('debug');
     log.debug('test');
-    test.equal(lastWrite, '~ [date] DEBUG -- test');
+    test.equal(lastWrite, '~ [date] DEBUG -- test\n');
     test.done();
 };
 exports.debugIgnore = function(test) {
@@ -30,7 +30,7 @@ exports.debugIgnore = function(test) {
 exports.info = function(test) {
     log.setLevel('info');
     log.info('test');
-    test.equal(lastWrite, '~ [date] INFO -- test');
+    test.equal(lastWrite, '~ [date] INFO -- test\n');
     test.done();
 };
 exports.infoIgnore = function(test) {
@@ -44,7 +44,7 @@ exports.infoIgnore = function(test) {
 exports.warn = function(test) {
     log.setLevel('warn');
     log.warn('test');
-    test.equal(lastWrite, '~ [date] WARN -- test');
+    test.equal(lastWrite, '~ [date] WARN -- test\n');
     test.done();
 };
 exports.warnIgnore = function(test) {
@@ -58,7 +58,7 @@ exports.warnIgnore = function(test) {
 exports.error = function(test) {
     log.setLevel('error');
     log.error('test');
-    test.equal(lastWrite, '~ [date] ERROR -- test');
+    test.equal(lastWrite, '~ [date] ERROR -- test\n');
     test.done();
 };
 
@@ -77,105 +77,105 @@ exports.fatal = function(test) {
         test.ok(true);
     };
     log.fatal('test');
-    test.equal(lastWrite, '~ [date] FATAL -- test');
+    test.equal(lastWrite, '~ [date] FATAL -- test\n');
     test.done();
 };
 
 exports.booleanKeyVal = function(test) {
     log.setLevel('debug');
     log.debug('', {test: true});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="true"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="true"\n');
     log.debug('', {test: false});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="false"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="false"\n');
     log.debug('', {test: new Boolean(false)});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="false"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="false"\n');
     test.done();
 };
 
 exports.numericKeyVal = function(test) {
     log.setLevel('debug');
     log.debug('', {test: 1});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="1"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="1"\n');
     log.debug('', {test: '1'});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="1"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="1"\n');
     log.debug('', {test: new Number(1)});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="1"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="1"\n');
     test.done();
 };
 
 exports.stringKeyVal = function(test) {
     log.setLevel('debug');
     log.debug('', {test: ''});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test=""');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test=""\n');
     log.debug('', {test: 'val'});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="val"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="val"\n');
     log.debug('', {test: new String('str')});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="str"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="str"\n');
     test.done();
 };
 
 exports.functionKeyVal = function(test) {
     log.setLevel('debug');
     log.debug('', {test: test.done});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="function"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="function"\n');
     test.done();
 };
 
 exports.undefinedKeyVal = function(test) {
     log.setLevel('debug');
     log.debug('', {test: undefined});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="undefined"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="undefined"\n');
     test.done();
 };
 
 exports.nullKeyVal = function(test) {
     log.setLevel('debug');
     log.debug('', {test: null});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="null"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="null"\n');
     test.done();
 };
 
 exports.jsonObjKeyVal = function(test) {
     log.setLevel('debug');
     log.debug('', {test: {k: 'v'}});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="{\\"k\\":\\"v\\"}"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="{\\"k\\":\\"v\\"}"\n');
     test.done();
 };
 
 exports.toJSONKeyVal = function(test) {
     log.setLevel('debug');
     log.debug('', {test: {toJSON: function() { return 'testJSON'; }}});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="testJSON"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="testJSON"\n');
     log.debug('', {test: {toJSON: function() { return {k: 'v'}; }}});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="{\\"k\\":\\"v\\"}"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="{\\"k\\":\\"v\\"}"\n');
     test.done();
 };
 
 exports.miscKeyVal = function(test) {
     log.setLevel('debug');
     log.debug('', 'test');
-    test.equal(lastWrite, '~ [date] DEBUG --  -- string="test"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- string="test"\n');
     log.debug('', 1);
-    test.equal(lastWrite, '~ [date] DEBUG --  -- number="1"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- number="1"\n');
     test.done();
 };
 
 exports.unicodeEscape = function(test) {
     log.setLevel('debug');
     log.debug('\u2665', {k: '\u2665'});
-    test.equal(lastWrite, '~ [date] DEBUG -- \\u2665 -- k="\\u2665"');
+    test.equal(lastWrite, '~ [date] DEBUG -- \\u2665 -- k="\\u2665"\n');
     test.done();
 };
 
 exports.errorKeyVal = function(test) {
     log.setLevel('debug');
     log.debug('', {error: new Error('test')});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- error="test"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- error="test"\n');
     //test the shorthand
     log.debug('', new Error('test'));
-    test.equal(lastWrite, '~ [date] DEBUG --  -- error="test"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- error="test"\n');
     log.debug('', {error: {message: 'test', code: 1}});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- error="test (Code: 1)"');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- error="test (Code: 1)"\n');
     test.done();
 };
 
@@ -186,7 +186,7 @@ exports.date = function(test) {
     //this depends on debug running within 1 second
     var date = (new Date()).toLocaleString();
     log.debug('');
-    test.equal(lastWrite, '~ [' + date + '] DEBUG -- ');
+    test.equal(lastWrite, '~ [' + date + '] DEBUG -- \n');
     log.instance.getDateString = oldDateFn;
     test.done();
 };
