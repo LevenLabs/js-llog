@@ -55,6 +55,7 @@ LLog.prototype.exit = function() {
 };
 
 function toString(val) {
+    var str;
     switch (typeof val) {
         case 'string':
             return val;
@@ -83,16 +84,34 @@ function toString(val) {
                 return val.valueOf() ? 'true' : 'false';
             }
             if (typeof val.toJSON === 'function') {
-                return val.toJSON();
+                str = val.toJSON();
+                //apparently toJSON prepares an object for stringify() doesn't convert to string
+                if (typeof str === 'string' || str instanceof String) {
+                    return str;
+                }
+                try {
+                    //stringify automatically calls toJSON() so we'll let it handle that
+                    return JSON.stringify(val);
+                } catch (e) {
+                    LLog.warn('failed JSON.stringify after toJSON in llog', e);
+                    //lets continue on and see if we can do something else?
+                }
+            }
+            //if its an error and has a message, otherwise just fallback to toString()
+            if (val.hasOwnProperty('message')) {
+                if (val.hasOwnProperty('code')) {
+                    return val.message + ' (Code: ' + val.code + ')';
+                }
+                return val.message;
             }
             if (typeof val.toString === 'function') {
-                var str = val.toString();
+                str = val.toString();
                 if (str === '[object Object]') {
-                    //might as well json it
+                    //might as well json it since its a plain object
                     try {
                         str = JSON.stringify(val);
                     } catch (e) {
-                        LLog.warn('failed JSON.stringify in toString in llog', {err: e.message});
+                        LLog.warn('failed JSON.stringify in toString in llog', e);
                         str = 'object';
                     }
                 }
@@ -132,6 +151,10 @@ LLog.prototype.log = function(lvl, message, kv) {
         parts[4] = escapeValue(message);
     } else if (typeof message === 'object' && kv === undefined) {
         kv = message;
+    }
+    //shorthand for the common case of log.error('message', err)
+    if (kv instanceof Error) {
+        kv = {error: kv};
     }
     for (k in kv) {
         if (kv.hasOwnProperty(k)) {

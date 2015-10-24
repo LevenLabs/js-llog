@@ -1,12 +1,15 @@
 # levenlabs-log #
 
-A library for logging that follows the Leven Labs Logging Spec.
+A library for logging that follows the Leven Labs Logging Spec. Based on
+[go-llog](https://github.com/LevenLabs/go-llog).
 
 ### Usage ###
 
 ```JS
 var log = require('levenlabs-log');
 ```
+
+Can also be used in a browser environment to log messages to the console.
 
 ### Levels ###
 
@@ -27,6 +30,9 @@ Set the global minimum logging level. `level` can be a string or number.
 Log `message` if the current level is less or equal to `level`. `level` can be
 a string or number. If `keyVals` is sent, the values keys and values will be
 logged as well.
+
+For convenience, if `keyVals` is an instance of `Error` it will be
+automatically expanded to `{error: keyVals}`.
 
 ### log.debug(message, keyVals) ###
 

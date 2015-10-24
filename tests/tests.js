@@ -146,6 +146,8 @@ exports.toJSONKeyVal = function(test) {
     log.setLevel('debug');
     log.debug('', {test: {toJSON: function() { return 'testJSON'; }}});
     test.equal(lastWrite, '~ [date] DEBUG --  -- test="testJSON"');
+    log.debug('', {test: {toJSON: function() { return {k: 'v'}; }}});
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="{\\"k\\":\\"v\\"}"');
     test.done();
 };
 
@@ -153,6 +155,18 @@ exports.unicodeEscape = function(test) {
     log.setLevel('debug');
     log.debug('\u2665', {k: '\u2665'});
     test.equal(lastWrite, '~ [date] DEBUG -- \\u2665 -- k="\\u2665"');
+    test.done();
+};
+
+exports.errorKeyVal = function(test) {
+    log.setLevel('debug');
+    log.debug('', {error: new Error('test')});
+    test.equal(lastWrite, '~ [date] DEBUG --  -- error="test"');
+    //test the shorthand
+    log.debug('', new Error('test'));
+    test.equal(lastWrite, '~ [date] DEBUG --  -- error="test"');
+    log.debug('', {error: {message: 'test', code: 1}});
+    test.equal(lastWrite, '~ [date] DEBUG --  -- error="test (Code: 1)"');
     test.done();
 };
 
