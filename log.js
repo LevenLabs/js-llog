@@ -148,7 +148,7 @@ LLog.prototype.log = function(lvl, message, kv) {
             'no log message provided',
             '--'
         ],
-        k, v;
+        k;
     if (typeof message === 'string') {
         parts[4] = escapeValue(message);
     } else if (typeof message === 'object' && kv === undefined) {
@@ -164,7 +164,6 @@ LLog.prototype.log = function(lvl, message, kv) {
     }
     for (k in kv) {
         if (kv.hasOwnProperty(k)) {
-            v = toString(kv[k]);
             parts.push(k + '=' + escapeQuoteValue(toString(kv[k])) + '');
         }
     }
