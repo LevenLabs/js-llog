@@ -1,4 +1,6 @@
-var log = require('../log.js'),
+var logFilename = '../log.js',
+    log = require(logFilename),
+    requireReload = require('require-reload')(require),
     lastWrite = '';
 
 exports.setupStdout = function(test) {
@@ -188,5 +190,17 @@ exports.date = function(test) {
     log.debug('');
     test.equal(lastWrite, '~ [' + date + '] DEBUG -- \n');
     log.instance.getDateString = oldDateFn;
+    test.done();
+};
+
+exports.defaultLevel = function(test) {
+    var l = new log();
+    test.equal(l.level, 1);
+
+    process.env.LLOG_LEVEL = 'debug';
+    log = requireReload(logFilename);
+    l = new log();
+    test.equal(l.level, 0);
+
     test.done();
 };

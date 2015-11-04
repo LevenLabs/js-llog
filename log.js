@@ -11,6 +11,7 @@ var LEVEL_DEBUG = 0,
     LEVEL_WARN = 2,
     LEVEL_ERROR = 3,
     LEVEL_FATAL = 4,
+    defaultLevel = LEVEL_INFO,
     stringToLevel = {
         debug: LEVEL_DEBUG,
         info: LEVEL_INFO,
@@ -29,8 +30,14 @@ function handleLevel(lvl) {
     return typeof lvl === 'string' ? stringToLevel[lvl.toLowerCase()] : lvl;
 }
 
+if (typeof process !== 'undefined' && typeof process.env === 'object') {
+    if (process.env.hasOwnProperty('LLOG_LEVEL')) {
+        defaultLevel = handleLevel(process.env.LLOG_LEVEL);
+    }
+}
+
 function LLog(level, stdout) {
-    this.level = handleLevel(level) || LEVEL_DEBUG;
+    this.level = handleLevel(level) || defaultLevel;
     if (stdout) {
         this.stdout = stdout;
     } else if (typeof process !== 'undefined' && process.stdout && typeof LLOG_SKIP_USING_PROCESS === 'undefined') {
