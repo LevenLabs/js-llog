@@ -3,6 +3,7 @@
 ### 0.1.0 ###
 * Handle `keyVals` being a string or number
 * Stable release
+* Added `LLOG_LEVEL` env variable parsing
 
 ### 0.0.2 ###
 * Added handling of `Error`s
