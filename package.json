@@ -1,6 +1,6 @@
 {
   "name": "levenlabs-log",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Leven Labs Logging",
   "main": "log.js",
   "directories": {
