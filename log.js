@@ -107,11 +107,14 @@ function toString(val) {
                 }
             }
             //if its an error and has a message, otherwise just fallback to toString()
-            if (val.hasOwnProperty('message')) {
+            //specifically look for data since rpc "errors" contain those and we
+            //don't want to treat those as errors
+            if (val instanceof Error || (val.hasOwnProperty('message') && val.hasOwnProperty('code') && !val.hasOwnProperty('data'))) {
+                str = val.message;
                 if (val.hasOwnProperty('code')) {
-                    return val.message + ' (Code: ' + val.code + ')';
+                    str += ' (Code: ' + val.code + ')';
                 }
-                return val.message;
+                return str
             }
             if (typeof val.toString === 'function') {
                 str = val.toString();

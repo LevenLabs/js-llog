@@ -1,5 +1,8 @@
 ## Changelog ##
 
+### 0.1.1 ###
+* Don't treat rpc errors as an Error
+
 ### 0.1.0 ###
 * Handle `keyVals` being a string or number
 * Stable release

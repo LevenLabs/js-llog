@@ -178,6 +178,8 @@ exports.errorKeyVal = function(test) {
     test.equal(lastWrite, '~ [date] DEBUG --  -- error="test"\n');
     log.debug('', {error: {message: 'test', code: 1}});
     test.equal(lastWrite, '~ [date] DEBUG --  -- error="test (Code: 1)"\n');
+    log.debug('', {error: {message: 'test', code: 1, data: 'hey'}});
+    test.equal(lastWrite, '~ [date] DEBUG --  -- error="{\\"message\\":\\"test\\",\\"code\\":1,\\"data\\":\\"hey\\"}"\n');
     test.done();
 };
 
