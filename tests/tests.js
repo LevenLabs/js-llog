@@ -199,10 +199,21 @@ exports.defaultLevel = function(test) {
     var l = new log();
     test.equal(l.level, 1);
 
-    process.env.LLOG_LEVEL = 'debug';
+    process.env.LLOG_LEVEL = 'warn';
     log = requireReload(logFilename);
     l = new log();
-    test.equal(l.level, 0);
+    test.equal(l.level, 2);
 
+    delete process.env.LLOG_LEVEL;
+
+    test.done();
+};
+
+exports.persistInstance = function(test) {
+    log.setLevel('error');
+
+    log = requireReload(logFilename);
+
+    test.equal(log.getLevel(), 'error');
     test.done();
 };

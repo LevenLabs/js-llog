@@ -184,7 +184,19 @@ LLog.prototype.log = function(lvl, message, kv) {
     this.stdout.write(parts.join(' ') + '\n');
 };
 
-LLog.instance = null;
+if (typeof global !== 'undefined' && typeof Object.defineProperty === 'function') {
+    Object.defineProperty(LLog, 'instance', {
+        get: function() {
+            return global.LLOG_INSTANCE;
+        },
+        set: function(newValue) {
+            global.LLOG_INSTANCE = newValue;
+        }
+    });
+    global.LLOG_INSTANCE = global.LLOG_INSTANCE || null;
+} else {
+    LLog.instance = null;
+}
 
 LLog.log = function() {
     if (!LLog.instance) {
@@ -207,6 +219,13 @@ LLog.setLevel = function(level) {
         default:
             throw new Error('level sent to LLog.setLevel must be a string/number');
     }
+};
+
+LLog.getLevel = function(level) {
+    if (!LLog.instance) {
+        LLog.instance = new LLog();
+    }
+    return levelToString[LLog.instance.level];
 };
 
 LLog.debug = function() {
