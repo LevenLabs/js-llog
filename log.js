@@ -2,7 +2,7 @@ if (typeof require === 'function') {
     var jsesc = require('jsesc');
 } else {
     jsesc = function(val) {
-        return val.replace(/\n/g, '\\n').replace('"', '\"');
+        return val.replace(/\n/g, '\\n');
     };
 }
 
@@ -36,8 +36,22 @@ if (typeof process !== 'undefined' && typeof process.env === 'object') {
     }
 }
 
-function LLog(level, stdout) {
-    this.level = handleLevel(level) || defaultLevel;
+// old format: LLog(level, stdout)
+function LLog(opts) {
+    var level = defaultLevel;
+    var stdout;
+    if (typeof opts === 'object' && opts != null) {
+        level = opts.level || level;
+        stdout = opts.stdout;
+    } else {
+        if (typeof opts !== 'undefined') {
+            level = opts;
+        }
+        if (arguments.length > 1) {
+            stdout = arguments[1];
+        }
+    }
+    this.level = handleLevel(level) || level;
     if (stdout) {
         this.stdout = stdout;
     } else if (typeof process !== 'undefined' && process.stdout && typeof LLOG_SKIP_USING_PROCESS === 'undefined') {
@@ -137,12 +151,8 @@ function escapeValue(val) {
     return jsesc(val);
 }
 
-//also wraps in quotes
 function escapeQuoteValue(val) {
-    return jsesc(val, {
-        quotes: 'double',
-        wrap: true
-    });
+    return val.replace(/"/g, '\'');
 }
 
 LLog.prototype.log = function(lvl, message, kv) {
@@ -151,14 +161,14 @@ LLog.prototype.log = function(lvl, message, kv) {
         return;
     }
     var parts = [
-            '~',
-            '[' + this.getDateString() + ']',
-            (levelToString[level] || 'DEBUG').toUpperCase(),
-            '--',
-            'no log message provided',
-            '--'
-        ],
-        k;
+        '~',
+        '[' + this.getDateString() + ']',
+        (levelToString[level] || 'DEBUG').toUpperCase(),
+        '--',
+        'no log message provided',
+        '--'
+    ];
+    var k;
     if (typeof message === 'string') {
         parts[4] = escapeValue(message);
     } else if (typeof message === 'object' && kv === undefined) {
@@ -174,7 +184,8 @@ LLog.prototype.log = function(lvl, message, kv) {
     }
     for (k in kv) {
         if (kv.hasOwnProperty(k)) {
-            parts.push(k + '=' + escapeQuoteValue(toString(kv[k])) + '');
+            // logstash doesn't handle escaped quotes: https://github.com/elastic/logstash/issues/1645
+            parts.push(k + '="' + escapeQuoteValue(escapeValue(toString(kv[k]))) + '"');
         }
     }
     //if there were no kv's then just remove the trailing separator

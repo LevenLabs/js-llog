@@ -4,9 +4,12 @@ var logFilename = '../log.js',
     lastWrite = '';
 
 exports.setupStdout = function(test) {
-    log.instance = new log('debug', {
-        write: function(str) {
-            lastWrite = str;
+    log.instance = new log({
+        level: 'debug',
+        stdout: {
+            write: function(str) {
+                lastWrite = str;
+            }
         }
     });
     log.instance.getDateString = function() {
@@ -113,6 +116,8 @@ exports.stringKeyVal = function(test) {
     test.equal(lastWrite, '~ [date] DEBUG --  -- test="val"\n');
     log.debug('', {test: new String('str')});
     test.equal(lastWrite, '~ [date] DEBUG --  -- test="str"\n');
+    log.debug('', {test: new String('st"r')});
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="st\'r"\n');
     test.done();
 };
 
@@ -140,7 +145,7 @@ exports.nullKeyVal = function(test) {
 exports.jsonObjKeyVal = function(test) {
     log.setLevel('debug');
     log.debug('', {test: {k: 'v'}});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="{\\"k\\":\\"v\\"}"\n');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="{\'k\':\'v\'}"\n');
     test.done();
 };
 
@@ -149,7 +154,7 @@ exports.toJSONKeyVal = function(test) {
     log.debug('', {test: {toJSON: function() { return 'testJSON'; }}});
     test.equal(lastWrite, '~ [date] DEBUG --  -- test="testJSON"\n');
     log.debug('', {test: {toJSON: function() { return {k: 'v'}; }}});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- test="{\\"k\\":\\"v\\"}"\n');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- test="{\'k\':\'v\'}"\n');
     test.done();
 };
 
@@ -179,7 +184,7 @@ exports.errorKeyVal = function(test) {
     log.debug('', {error: {message: 'test', code: 1}});
     test.equal(lastWrite, '~ [date] DEBUG --  -- error="test (Code: 1)"\n');
     log.debug('', {error: {message: 'test', code: 1, data: 'hey'}});
-    test.equal(lastWrite, '~ [date] DEBUG --  -- error="{\\"message\\":\\"test\\",\\"code\\":1,\\"data\\":\\"hey\\"}"\n');
+    test.equal(lastWrite, '~ [date] DEBUG --  -- error="{\'message\':\'test\',\'code\':1,\'data\':\'hey\'}"\n');
     test.done();
 };
 
