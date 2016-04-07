@@ -3,6 +3,7 @@
 ### 0.2.0 ###
 * Fixed quoting to fix logstash issues
 * Changed constructor to accept options
+* Default to not showing the timestamp
 
 ### 0.1.2 ###
 * Fix global persistance across module usages

@@ -8,12 +8,9 @@ exports.processStdout = function(test) {
         lastWrite = string;
     };
     log.instance = new log('debug');
-    log.instance.getDateString = function() {
-        return 'date';
-    };
     log.setLevel('debug');
     log.debug('test');
-    test.equal(lastWrite, '~ [date] DEBUG -- test\n');
+    test.equal(lastWrite, '~ DEBUG -- test\n');
     process.stdout.write = oldStdoutWrite;
     test.done();
 };

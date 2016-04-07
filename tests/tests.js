@@ -3,6 +3,11 @@ var logFilename = '../log.js',
     requireReload = require('require-reload')(require),
     lastWrite = '';
 
+exports.getInstanceCreates = function(test) {
+    test.notEqual(log.instance, null);
+    test.done();
+};
+
 exports.setupStdout = function(test) {
     log.instance = new log({
         level: 'debug',
@@ -10,7 +15,8 @@ exports.setupStdout = function(test) {
             write: function(str) {
                 lastWrite = str;
             }
-        }
+        },
+        displayTimestamp: true
     });
     log.instance.getDateString = function() {
         return 'date';
@@ -196,6 +202,10 @@ exports.date = function(test) {
     var date = (new Date()).toLocaleString();
     log.debug('');
     test.equal(lastWrite, '~ [' + date + '] DEBUG -- \n');
+    log.displayTimestamp = false;
+    log.debug('');
+    test.equal(lastWrite, '~ DEBUG -- \n');
+    log.displayTimestamp = true;
     log.instance.getDateString = oldDateFn;
     test.done();
 };

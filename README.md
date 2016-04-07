@@ -55,3 +55,7 @@ Helper method for calling `log.log('error', message, keyVals)`.
 Helper method for calling `log.log('fatal', message, keyVals)`. Except that
 after it logs, it calls `process.exit(1)`, if being called in a Node.js
 environment.
+
+### log.displayTimestamp ###
+
+Defaults to false. Set to true to enable putting the timestamp in each log.

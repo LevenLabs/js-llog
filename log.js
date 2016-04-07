@@ -38,8 +38,9 @@ if (typeof process !== 'undefined' && typeof process.env === 'object') {
 
 // old format: LLog(level, stdout)
 function LLog(opts) {
-    var level = defaultLevel;
-    var stdout;
+    var options = opts || {},
+        level = defaultLevel,
+        stdout;
     if (typeof opts === 'object' && opts != null) {
         level = opts.level || level;
         stdout = opts.stdout;
@@ -65,6 +66,7 @@ function LLog(opts) {
             }
         };
     }
+    this.displayTimestamp = options.displayTimestamp === true;
 }
 
 LLog.prototype.getDateString = function() {
@@ -162,15 +164,19 @@ LLog.prototype.log = function(lvl, message, kv) {
     }
     var parts = [
         '~',
-        '[' + this.getDateString() + ']',
         (levelToString[level] || 'DEBUG').toUpperCase(),
         '--',
         'no log message provided',
         '--'
     ];
+    var msgIndex = 3;
     var k;
+    if (this.displayTimestamp) {
+        parts.splice(1, 0, '[' + this.getDateString() + ']');
+        msgIndex = 4;
+    }
     if (typeof message === 'string') {
-        parts[4] = escapeValue(message);
+        parts[msgIndex] = escapeValue(message);
     } else if (typeof message === 'object' && kv === undefined) {
         kv = message;
     }
@@ -196,30 +202,35 @@ LLog.prototype.log = function(lvl, message, kv) {
 };
 
 if (typeof global !== 'undefined' && typeof Object.defineProperty === 'function') {
+    global.LLOG_INSTANCE = global.LLOG_INSTANCE || null;
     Object.defineProperty(LLog, 'instance', {
         get: function() {
+            if (!global.LLOG_INSTANCE) {
+                global.LLOG_INSTANCE = new LLog();
+            }
             return global.LLOG_INSTANCE;
         },
         set: function(newValue) {
             global.LLOG_INSTANCE = newValue;
         }
     });
-    global.LLOG_INSTANCE = global.LLOG_INSTANCE || null;
+    Object.defineProperty(LLog, 'displayTimestamp', {
+        get: function() {
+            return LLog.instance && LLog.instance.displayTimestamp;
+        },
+        set: function(newValue) {
+            LLog.instance.displayTimestamp = !!newValue;
+        }
+    });
 } else {
     LLog.instance = null;
 }
 
 LLog.log = function() {
-    if (!LLog.instance) {
-        LLog.instance = new LLog();
-    }
     LLog.instance.log.apply(LLog.instance, Array.prototype.slice.call(arguments));
 };
 
 LLog.setLevel = function(level) {
-    if (!LLog.instance) {
-        LLog.instance = new LLog();
-    }
     switch (typeof level) {
         case 'string':
             LLog.instance.level = stringToLevel[level.toLowerCase()] || 0;
@@ -233,9 +244,6 @@ LLog.setLevel = function(level) {
 };
 
 LLog.getLevel = function(level) {
-    if (!LLog.instance) {
-        LLog.instance = new LLog();
-    }
     return levelToString[LLog.instance.level];
 };
 
